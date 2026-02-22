@@ -1,6 +1,14 @@
 name: 每日股票分析
 
 on:
+  workflow_dispatch:
+    inputs:
+      stock_code:
+        description: '输入要单独分析的股票代码（如600519）'
+        required: false
+        default: ''
+  schedule:
+    - cron: '0 4 * * *' # 保留原有的定时任务，不用改
   # 定时触发 - 每天北京时间 18:00 (UTC 10:00)
   schedule:
     - cron: '0 10 * * 1-5'     # 周一到周五，UTC 10:00 = 北京时间 18:00
@@ -132,7 +140,7 @@ jobs:
           # ==========================================
           # 自选股配置
           # ==========================================
-          STOCK_LIST: ${{ vars.STOCK_LIST || secrets.STOCK_LIST || '600519' }}
+          STOCK_LIST: ${{ github.event.inputs.stock_code || secrets.STOCK_LIST }}
           
           # ==========================================
           # 运行配置 ⬅️ 新增！
